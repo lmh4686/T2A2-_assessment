@@ -2,21 +2,22 @@ from flask import Blueprint, request
 from db import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.cars import Car, CarSchema
-from models.categories import Category
 from models.brands import Brand
 from models.employees import Employee
+from sqlalchemy.exc import IntegrityError
+from controllers.auth_controller import authorize
 
 cars = Blueprint('cars', __name__, url_prefix="/cars")
 
 @cars.route("/all/")
+@jwt_required()
 def all_cars():
-    stmt = db.select(Car)
-    cars = db.session.scalars(stmt)
-    print(cars)
+    stmt = db.select(Car) # Select all cars
+    cars = db.session.scalars(stmt) # Execute stmt & return all cars
     return CarSchema(many=True).dump(cars)
 
 
-@cars.route("/add", methods=['POST'])
+@cars.route("/add/", methods=['POST'])
 @jwt_required()
 def add_car():
     emp_id = get_jwt_identity()
@@ -26,6 +27,7 @@ def add_car():
     if not emp:
         return {'err': 'Unauthorized access'}, 401
     
+
     field = request.json
     car = Car(
         category_id = db.select(Category.id).filter(Category.name == field['category']),
@@ -42,7 +44,7 @@ def add_car():
     db.session.commit()
     
     return {'New car': CarSchema().dump(car)}
-
+    
 
 @cars.route("/price_range/")
 def price_range():
