@@ -23,6 +23,25 @@ class Security:
             abort(401)
 
 
+@auth.route('/employees/')
+@jwt_required()
+def get_all_employees():
+    Security.authorize()
+    #Extract all employees/json conversion & execution & query statement all in one.
+    return EmployeeSchema(many=True).dump(db.session.execute
+                                         (db.select(Employee))
+                                         .scalars())
+    
+@auth.route('/<int:id>/employee/')
+@jwt_required()
+def get_one_employee(id):
+    Security.authorize()
+    #Extract one employee whose id is equal to the given id in the uri parameter
+    return EmployeeSchema().dump(db.session.execute
+                                (db.select(Employee)
+                                .filter_by(id=id))
+                                .scalar())
+
 @auth.route('/register/', methods=['POST'])
 def register():
     if request.json["office_pw"] == Security.office_pw:
@@ -67,7 +86,7 @@ def login():
 
 @auth.route('/self/update/', methods=['PUT', 'PATCH'])
 @jwt_required()
-def update():
+def self_update():
     fields = EmployeeSchema().load(request.json)
     # Select an employee whose id is equal to current jwt's identity 
     stmt = db.select(Employee).filter_by(id=get_jwt_identity())
@@ -77,11 +96,12 @@ def update():
         return {'err': 'Provide at least one field to update.'}, 400
     
     emp.username = fields.get('username') or emp.username
-    emp.password = fields.get('password') or emp.password
+    emp.password = bcrypt.generate_password_hash(
+        fields.get('password')
+        ).decode('utf8') or emp.password
     emp.f_name = fields["f_name"].capitalize() if "f_name" in fields else emp.f_name
     emp.l_name = fields["l_name"].capitalize() if "l_name" in fields else emp.l_name
     emp.ph = fields.get('ph') or emp.ph
-    
     
     try:
         db.session.commit()
@@ -91,17 +111,17 @@ def update():
     return {"Updated employee": EmployeeSchema().dump(emp)}
     
     
-@auth.route('<int:id>/fire', methods=['DELETE'])
+@auth.route('<int:id>/discharge/', methods=['DELETE'])
 @jwt_required()
-def fire(id):
-    authorize()
-
+def delete_emp(id):
+    Security.authorize()
+    #Select an employee whose id matches with the given id in the uri parameter
     stmt = db.select(Employee).filter_by(id=id)
     emp = db.session.scalar(stmt)
 
     if not emp:
-        return {'err': 'Employee not found'}, 404
+        return {'err': f"Employee not found with matching id {id}"}, 404
 
     db.session.delete(emp)
     db.session.commit()
-    return {'Fired employee': EmployeeSchema().dump(emp)}
+    return {'Discharged employee': EmployeeSchema().dump(emp)}

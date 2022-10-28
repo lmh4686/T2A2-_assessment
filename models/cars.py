@@ -14,7 +14,7 @@ class Car(db.Model):
     
     model_id = db.Column(db.Integer, db.ForeignKey("models.id"), nullable=False)
     
-    assigned_car = db.relationship("AssignedCar",  back_populates='car')
+    assigned_car = db.relationship("AssignedCar",  back_populates='car', cascade="all, delete")
     
     
 
