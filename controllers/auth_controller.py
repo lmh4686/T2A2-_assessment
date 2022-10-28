@@ -15,7 +15,7 @@ class Security:
     
     def authorize():
         emp_id = get_jwt_identity() 
-        # Select an employee whose id is equal to jwt's identity
+        # Select an employee whose id is equal to current jwt's identity
         stmt = db.select(Employee).filter_by(id=emp_id) 
         # execute stmt and return the employee satisfied stmt.
         emp = db.session.scalar(stmt)
@@ -69,21 +69,26 @@ def login():
 @jwt_required()
 def update():
     fields = EmployeeSchema().load(request.json)
+    # Select an employee whose id is equal to current jwt's identity 
     stmt = db.select(Employee).filter_by(id=get_jwt_identity())
     emp = db.session.scalar(stmt)
-    
-    if not emp:
-        return {'err': f'Employee not found with id {id}'}, 404
     
     if not fields:
         return {'err': 'Provide at least one field to update.'}, 400
     
     emp.username = fields.get('username') or emp.username
     emp.password = fields.get('password') or emp.password
-    emp.name = fields.get('name') or emp.name
+    emp.f_name = fields["f_name"].capitalize() if "f_name" in fields else emp.f_name
+    emp.l_name = fields["l_name"].capitalize() if "l_name" in fields else emp.l_name
+    emp.ph = fields.get('ph') or emp.ph
     
-    db.session.commit()
-    return EmployeeSchema().dump(emp)
+    
+    try:
+        db.session.commit()
+    except IntegrityError:
+        return {"err": "Existing username or phone number."}, 409
+    
+    return {"Updated employee": EmployeeSchema().dump(emp)}
     
     
 @auth.route('<int:id>/fire', methods=['DELETE'])
