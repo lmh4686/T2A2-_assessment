@@ -15,8 +15,10 @@ class Security:
     
     def authorize():
         emp_id = get_jwt_identity() 
-        stmt = db.select(Employee).filter_by(id=emp_id) # Select an employee whose id is equal to jwt's identity
-        emp = db.session.scalar(stmt) # execute stmt and return the employee satisfied stmt.
+        # Select an employee whose id is equal to jwt's identity
+        stmt = db.select(Employee).filter_by(id=emp_id) 
+        # execute stmt and return the employee satisfied stmt.
+        emp = db.session.scalar(stmt)
         if not emp or not emp.is_admin:
             abort(401)
 
@@ -33,21 +35,20 @@ def register():
         employee = Employee(
             username = fields['username'],
             password = bcrypt.generate_password_hash(fields['password']).decode('utf8'),
-            f_name= fields['f_name'],
-            l_name= fields['l_name'],
+            f_name= fields['f_name'].capitalize(),
+            l_name= fields['l_name'].capitalize(),
             ph = fields['ph'],
             is_admin = False
-        )
-        
+        )       
         db.session.add(employee)
         db.session.commit()
         
-        token = create_access_token(identity= str(employee.id), expires_delta=timedelta(days=1))
+        token = create_access_token(identity=str(employee.id), expires_delta=timedelta(days=15))
         
-        return {"New employee": EmployeeSchema().dump(employee), "Token": token}, 201 # Created
+        return {"New employee": EmployeeSchema().dump(employee), "Token": token}, 201
     
-    except IntegrityError:
-        return {"err": "Existing username."}, 409
+    except IntegrityError:        
+        return {"err": "Existing username or phone number."}, 409
 
 
 @auth.route('/login/', methods=['POST'])
@@ -59,33 +60,16 @@ def login():
     if not employee or not bcrypt.check_password_hash(employee.password, fields['password']):
         return {"err": "Wrong username or password"}, 401 #Unauthorized
     
-    token = create_access_token(identity=employee.id, expires_delta=timedelta(days=1))
+    token = create_access_token(identity=employee.id, expires_delta=timedelta(days=15))
 
     return {"Logged in employee": EmployeeSchema(exclude=['username']).dump(employee), "Token": token}
 
 
-@auth.route('<int:id>/fire', methods=['DELETE'])
+@auth.route('/self/update/', methods=['PUT', 'PATCH'])
 @jwt_required()
-def fire(id):
-    authorize()
-
-    stmt = db.select(Employee).filter_by(id=id)
-    emp = db.session.scalar(stmt)
-
-    if not emp:
-        return {'err': 'Employee not found'}, 404
-
-    db.session.delete(emp)
-    db.session.commit()
-    return {'Fired employee': EmployeeSchema().dump(emp)}
-
-
-@auth.route('<int:id>/update', methods=['PUT', 'PATCH'])
-@jwt_required()
-def update(id):
-    authorize()
+def update():
     fields = EmployeeSchema().load(request.json)
-    stmt = db.select(Employee).filter_by(id=id)
+    stmt = db.select(Employee).filter_by(id=get_jwt_identity())
     emp = db.session.scalar(stmt)
     
     if not emp:
@@ -101,3 +85,18 @@ def update(id):
     db.session.commit()
     return EmployeeSchema().dump(emp)
     
+    
+@auth.route('<int:id>/fire', methods=['DELETE'])
+@jwt_required()
+def fire(id):
+    authorize()
+
+    stmt = db.select(Employee).filter_by(id=id)
+    emp = db.session.scalar(stmt)
+
+    if not emp:
+        return {'err': 'Employee not found'}, 404
+
+    db.session.delete(emp)
+    db.session.commit()
+    return {'Fired employee': EmployeeSchema().dump(emp)}

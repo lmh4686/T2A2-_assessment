@@ -1,1 +1,3 @@
 sqlalchemy Email validator for cli?
+Change timedelta to minutes on completion
+Random JWT secret key?
