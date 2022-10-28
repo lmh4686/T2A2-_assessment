@@ -35,7 +35,7 @@ def seed_db():
         )
     ]
     db.session.add_all(employees)
-
+    
     brands = [
         Brand(
             name = 'Jeep'

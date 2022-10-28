@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from controllers.auth_controller import authorize
+from controllers.auth_controller import Security
 from db import db
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError

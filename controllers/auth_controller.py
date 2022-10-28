@@ -4,13 +4,30 @@ from db import db, jwt, bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
 from sqlalchemy.exc import IntegrityError
+import os
 
 
 auth = Blueprint('auth', __name__, url_prefix='/auth/')
     
+    
+class Security:
+    office_pw = os.environ.get('OFFICE_PASSWORD')
+    
+    def authorize():
+        emp_id = get_jwt_identity() 
+        stmt = db.select(Employee).filter_by(id=emp_id) # Select an employee whose id is equal to jwt's identity
+        emp = db.session.scalar(stmt) # execute stmt and return the employee satisfied stmt.
+        if not emp or not emp.is_admin:
+            abort(401)
+
 
 @auth.route('register/', methods=['POST'])
 def register():
+    if request.json["office_pw"] == Security.office_pw:
+        del request.json['office_pw']
+    else:
+        return {'err': 'Wrong office password'}, 401
+    
     fields = EmployeeSchema().load(request.json)
     try:
         employee = Employee(
@@ -26,6 +43,7 @@ def register():
         token = create_access_token(identity= str(employee.id), expires_delta=timedelta(days=1))
         
         return {"New employee": EmployeeSchema().dump(employee), "Token": token}, 201 # Created
+    
     except IntegrityError:
         return {"err": "Existing username."}, 409
 
@@ -79,12 +97,4 @@ def update(id):
     
     db.session.commit()
     return EmployeeSchema().dump(emp)
-    
-
-def authorize():
-    emp_id = get_jwt_identity() 
-    stmt = db.select(Employee).filter_by(id=emp_id) # Select an employee whose id is equal to jwt's identity
-    emp = db.session.scalar(stmt) # execute stmt and return an employee.
-    if not emp or not emp.is_admin:
-        abort(401)
     

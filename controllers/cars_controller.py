@@ -5,7 +5,7 @@ from models.cars import Car, CarSchema
 from models.brands import Brand
 from models.employees import Employee
 from sqlalchemy.exc import IntegrityError
-from controllers.auth_controller import authorize
+from controllers.auth_controller import Security
 
 cars = Blueprint('cars', __name__, url_prefix="/cars")
 
