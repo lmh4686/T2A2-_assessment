@@ -25,13 +25,17 @@ def seed_db():
         Employee(
             username = 'lmh4686@gmail.com',
             password = bcrypt.generate_password_hash('boss123').decode('utf8'),
-            name = 'Jihyuk Lee',
+            f_name = 'Jihyuk',
+            l_name = 'Lee',
+            ph = '0321476521',
             is_admin = True
         ),
         Employee(
             username = 'employee1@email.com',
             password = bcrypt.generate_password_hash('employee1123').decode('utf8'),
-            name = 'Billy'
+            f_name = 'Billy',
+            l_name = 'William',
+            ph = '0987654210'
         )
     ]
     db.session.add_all(employees)

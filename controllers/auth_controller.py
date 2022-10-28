@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 import os
 
 
-auth = Blueprint('auth', __name__, url_prefix='/auth/')
+auth = Blueprint('auth', __name__, url_prefix='/auth')
     
     
 class Security:
@@ -21,7 +21,7 @@ class Security:
             abort(401)
 
 
-@auth.route('register/', methods=['POST'])
+@auth.route('/register/', methods=['POST'])
 def register():
     if request.json["office_pw"] == Security.office_pw:
         del request.json['office_pw']
@@ -33,7 +33,9 @@ def register():
         employee = Employee(
             username = fields['username'],
             password = bcrypt.generate_password_hash(fields['password']).decode('utf8'),
-            name = fields['name'],
+            f_name= fields['f_name'],
+            l_name= fields['l_name'],
+            ph = fields['ph'],
             is_admin = False
         )
         
@@ -48,9 +50,10 @@ def register():
         return {"err": "Existing username."}, 409
 
 
-@auth.route('login/', methods=['POST'])
+@auth.route('/login/', methods=['POST'])
 def login():
     fields = request.json
+    #Select an employee whose username is equal to username field in request body.
     stmt = db.select(Employee).filter_by(username = fields['username'])
     employee = db.session.scalar(stmt)
     if not employee or not bcrypt.check_password_hash(employee.password, fields['password']):
