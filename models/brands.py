@@ -1,4 +1,5 @@
 from db import db, ma
+from marshmallow.validate import Length, And, Regexp
 
 class Brand(db.Model):
     __tablename__ = 'brands'
@@ -13,4 +14,8 @@ class Brand(db.Model):
 
 class BrandSchema(ma.Schema):
     class Meta:
+        ordered = True
         fields = ("id", "name")
+    name = ma.String(validate=And(Length(min=2, max=20), 
+                                  Regexp('^[a-zA-Z]+$', 
+                                         error= "Must be only English alphabets")))
