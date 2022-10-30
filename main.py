@@ -1,5 +1,5 @@
 from flask import Flask
-from db import db, ma, jwt, bcrypt
+from init import db, ma, jwt, bcrypt
 import os
 from marshmallow.exceptions import ValidationError
 

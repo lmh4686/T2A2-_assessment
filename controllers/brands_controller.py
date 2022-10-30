@@ -1,14 +1,14 @@
 from flask import Blueprint, request
 from models.brands import Brand, BrandSchema
 from controllers.auth_controller import Security
-from db import db
+from init import db
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
 brands = Blueprint('brands', __name__, url_prefix='/brands')
 
 
-@brands.route('/register/', methods=['POST'])
+@brands.route('/', methods=['POST'])
 @jwt_required()
 def create_brand():
     Security.authorize()
@@ -27,7 +27,7 @@ def create_brand():
     return {'Registered brand': BrandSchema().dump(brand)}, 201
 
 
-@brands.route('<int:id>/update/', methods=['PUT', 'PATCH'])
+@brands.route('/<int:id>/', methods=['PUT', 'PATCH'])
 @jwt_required()
 def update(id):
     Security.authorize()
@@ -38,7 +38,9 @@ def update(id):
     #Select brand that has the same id with given id in the uri parameter 
     stmt = db.select(Brand).filter_by(id=id)
     brand = db.session.scalar(stmt)
-
+    
+    if not brand:
+        return {'err': f"Brand name with id '{id}' not found"}, 404
     brand.name = fields["name"].capitalize()
 
     try:

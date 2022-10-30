@@ -1,6 +1,5 @@
-from db import db, ma
+from init import db, ma
 from marshmallow.validate import Length, Email, Regexp, And
-from sqlalchemy.orm import validates
 from marshmallow import validates
 from marshmallow.exceptions import ValidationError
 

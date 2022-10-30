@@ -1,5 +1,6 @@
-from db import db, ma
+from init import db, ma
 from marshmallow.validate import Length, And, Regexp
+
 
 class Brand(db.Model):
     __tablename__ = 'brands'
@@ -11,6 +12,7 @@ class Brand(db.Model):
         "Model",
         backref='brand'
     )
+
 
 class BrandSchema(ma.Schema):
     class Meta:

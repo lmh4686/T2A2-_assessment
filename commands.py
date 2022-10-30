@@ -1,11 +1,12 @@
 from models.models import Model
 from models.employees import Employee
 from models.brands import Brand
+from models.bodies import Body
 from models.cars import Car
 from models.assigned_cars import AssignedCar
-from db import db, bcrypt
+from init import db, bcrypt
 from flask import Blueprint
-from datetime import datetime
+from datetime import datetime, date
 
 db_commands = Blueprint("db", __name__)
 
@@ -49,19 +50,37 @@ def seed_db():
         )
     ]
     db.session.add_all(brands)
+    
+    bodies = [
+        Body(
+            type = 'Suv',
+            size = 'Medium',          
+        ),
+        Body(
+            type = 'Ute',
+            size = 'Medium',          
+        )
+    ]
+    db.session.add_all(bodies)
     db.session.commit()
 
     models = [
         Model(
             brand = brands[0],
+            body = bodies[0],
             name = "Wrangler",
-            year = 2022
+            trim = "Unlimited Rubicon",
+            year = 2022,
+            color = 'Black'
         ),
 
         Model(
             brand = brands[1],
-            name = "Land Cruiser",
-            year = 2020
+            body = bodies[1],
+            name = "Hilux",
+            trim = "Rugged X",
+            year = 2019,
+            color = 'White'
         )
     ]
     db.session.add_all(models)
@@ -71,14 +90,14 @@ def seed_db():
         Car(
             model = models[0],
             rego = '1PK8GO',
-            price = 98000,
-            km = 3520
+            price = 90599,
+            driven_km = 3520
         ),
         Car(
             model = models[1],
             rego = '3JN8CU',
-            price = 82999,
-            km = 37621
+            price = 71400,
+            driven_km = 37621
         )
     ]
     db.session.add_all(cars)
@@ -88,12 +107,16 @@ def seed_db():
         AssignedCar(
             emp_id = employees[1].id,
             car_id = cars[0].id,
-            sale_due_date = datetime.strptime('15 Dec 2022', '%d %b %Y')
+            sale_goal_date = datetime.strptime('15 Dec 2022', '%d %b %Y'),
+            assigned_date = date.today(),
+            status = 'Ongoing'
         ),
         AssignedCar(
             emp_id = employees[1].id,
             car_id = cars[1].id,
-            sale_due_date = datetime.strptime('15 Feb 2023', '%d %b %Y')
+            sale_goal_date = datetime.strptime('15 Jan 2023', '%d %b %Y'),
+            assigned_date = date.today(),
+            status = 'Ongoing'
         )
     ]
     db.session.add_all(assigned_cars)

@@ -1,9 +1,10 @@
 from flask import Blueprint, request, abort
 from models.employees import Employee, EmployeeSchema
-from db import db, bcrypt
+from init import db, bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
 from sqlalchemy.exc import IntegrityError
+from defs import data_retriever
 import os
 
 
@@ -43,11 +44,10 @@ def get_all_employees():
 @jwt_required()
 def get_one_employee(id):
     Security.authorize('manager')
-    #Extract one employee whose id is equal to the given id in the uri parameter
-    emp = db.session.execute(db.select(Employee).filter_by(id=id)).scalar()
+    emp = data_retriever(Employee,id)
     if not emp:
         return {'err': f'No employee found with id {id}'}, 404
-    return EmployeeSchema().dump()
+    return EmployeeSchema().dump(emp)
 
 
 @auth.route('/register/', methods=['POST'])
@@ -103,9 +103,7 @@ def self_update():
         return {'err': 'Provide at least one field to update.'}, 400
     
     emp.username = fields.get('username') or emp.username
-    emp.password = bcrypt.generate_password_hash(
-        fields.get('password')
-        ).decode('utf8') or emp.password
+    emp.password = bcrypt.generate_password_hash(fields.get('password')).decode('utf8') or emp.password
     emp.f_name = fields["f_name"].capitalize() if "f_name" in fields else emp.f_name
     emp.l_name = fields["l_name"].capitalize() if "l_name" in fields else emp.l_name
     emp.ph = fields.get('ph') or emp.ph
@@ -118,7 +116,7 @@ def self_update():
     return {"Updated employee": EmployeeSchema().dump(emp)}
     
     
-@auth.route('<int:id>/discharge/', methods=['DELETE'])
+@auth.route('/<int:id>/discharge/', methods=['DELETE'])
 @jwt_required()
 def delete_emp(id):
     Security.authorize('manager')
