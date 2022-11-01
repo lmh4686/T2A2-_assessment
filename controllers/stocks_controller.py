@@ -7,17 +7,17 @@ from models.employees import Employee
 from sqlalchemy.exc import IntegrityError
 from controllers.auth_controller import Security
 
-cars = Blueprint('cars', __name__, url_prefix="/cars")
+stocks = Blueprint('stocks', __name__, url_prefix="/stocks")
 
-@cars.route("/all/")
+@stocks.route("/all/")
 @jwt_required()
 def all_cars():
-    stmt = db.select(Car) # Select all cars
-    cars = db.session.scalars(stmt) # Execute stmt & return all cars
-    return CarSchema(many=True).dump(cars)
+    stmt = db.select(Stock) # Select all stocks
+    stocks = db.session.scalars(stmt) # Execute stmt & return all stocks
+    return StockSchema(many=True).dump(stocks)
 
 
-@cars.route("/add/", methods=['POST'])
+@stocks.route("/add/", methods=['POST'])
 @jwt_required()
 def add_car():
     emp_id = get_jwt_identity()
@@ -29,7 +29,7 @@ def add_car():
     
 
     field = request.json
-    car = Car(
+    car = Stock(
         category_id = db.select(Category.id).filter(Category.name == field['category']),
         brand_id = db.select(Brand.id).filter(Brand.name == field['brand']),
         employee_id = db.select(Employee.id).filter(Employee.name == field['employee']),
@@ -43,26 +43,26 @@ def add_car():
     db.session.add(car)
     db.session.commit()
     
-    return {'New car': CarSchema().dump(car)}
+    return {'New car': StockSchema().dump(car)}
     
 
-@cars.route("/price_range/")
+@stocks.route("/price_range/")
 def price_range():
     field = request.json
-    stmt = db.select(Car).filter(Car.price>int(field['min']), Car.price<int(field['max']))
-    cars = db.session.scalars(stmt)
-    print(cars)
-    return CarSchema(many=True).dump(cars)
+    stmt = db.select(Stock).filter(Stock.price>int(field['min']), Stock.price<int(field['max']))
+    stocks = db.session.scalars(stmt)
+    print(stocks)
+    return StockSchema(many=True).dump(stocks)
     
 
-@cars.route("/filter")
+@stocks.route("/filter")
 def filter_cars():
     field = request.json 
     if "brand" not in field.keys():
-        stmt = db.select(Car).filter(Car.year >= field["min_year"], Car.year <= field["max_year"], Car.km >= field["min_km"], Car.km <= field["max_km"], Car.price >= field["min_price"], Car.price <= field["max_price"])
+        stmt = db.select(Stock).filter(Stock.year >= field["min_year"], Stock.year <= field["max_year"], Stock.km >= field["min_km"], Stock.km <= field["max_km"], Stock.price >= field["min_price"], Stock.price <= field["max_price"])
     else:
         brand = db.select(Brand.id).filter_by(name = field["brand"])
-        stmt = db.select(Car).filter(Car.brand_id == brand, Car.year >= field["min_year"], Car.year <= field["max_year"], Car.km >= field["min_km"], Car.km <= field["max_km"], Car.price >= field["min_price"], Car.price <= field["max_price"])
-    cars = db.session.scalars(stmt)
-    return CarSchema(many=True).dump(cars)
+        stmt = db.select(Stock).filter(Stock.brand_id == brand, Stock.year >= field["min_year"], Stock.year <= field["max_year"], Stock.km >= field["min_km"], Stock.km <= field["max_km"], Stock.price >= field["min_price"], Stock.price <= field["max_price"])
+    stocks = db.session.scalars(stmt)
+    return StockSchema(many=True).dump(stocks)
 

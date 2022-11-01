@@ -64,20 +64,34 @@ def update_trim(id):
     fields = TrimSchema().load(request.json)
 
     if not fields:
-        return {'err': "Field 'name' or 'body_type' or 'model_id' required."}, 400
+        return {'err': "One of the field required: 'name', 'body_type', 'model_id'."}, 400
 
-    trim = data_retriever(trim, id)
+    trim = data_retriever(Trim, id)
     
     if not trim:
-        return {'err': f"Trim name with id '{id}' not found"}, 404
+        return {'err': f"Trim that has id '{id}' not found"}, 404
     
-    trim.name = fields.get("name") or trim.name
-    trim.body_type = fields.get("body_type") or trim.body_type
+    temp_name = fields["name"].capitalize() if 'name' in fields else trim.name
+    temp_body_type = fields.get("body_type") or trim.body_type
+    temp_model_id = fields.get("model_id") or trim.model_id
+    
+    # Select a trim that all rows are same with fields's values except PK.
+    stmt = db.select(Trim).filter_by(name= temp_name,
+                                     body_type= temp_body_type,
+                                     model_id= temp_model_id)
+    duplication = db.session.scalar(stmt)
+    
+    if duplication:
+        return {'err': "Record already exists"}, 409
+    
+    trim.name = temp_name
+    trim.body_type = temp_body_type
+    trim.model_id = temp_model_id
     
     try:
         db.session.commit()
     except IntegrityError:
-        return {"err": "trim name already exists."}, 409
+        return {"err": f"Provided model_id {fields['model_id']} does not exist"}, 404
     
     return {"Updated trim": TrimSchema().dump(trim)}
 

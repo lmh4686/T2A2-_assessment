@@ -64,7 +64,7 @@ def update(id):
     # Select a model that has the same values with the fields except primary key.
     # .capitalize() won't work for fields.get().
     stmt = db.select(Model).filter_by(
-        name=fields["name"].capitalize() if "name" in fields else fields.get("name") or model.name, 
+        name=fields["name"].capitalize() if "name" in fields else model.name, 
         year=fields.get("year") or model.year, 
         brand_id=fields.get("brand_id") or model.brand_id)
     
@@ -78,7 +78,10 @@ def update(id):
     model.year = fields.get("year") or model.year
     model.brand_id = fields.get("brand_id") or model.brand_id
     
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        return {"err": f"Provided brand_id {fields['brand_id']} does not exist"}, 404
     
     return {"Updated model": ModelSchema().dump(model)}
 
