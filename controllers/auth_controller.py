@@ -4,7 +4,7 @@ from init import db, bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
 from sqlalchemy.exc import IntegrityError
-from defs import data_retriever
+from functions import data_retriever
 import os
 
 
@@ -25,9 +25,8 @@ class Security:
         if not emp:
             abort(401)
         
-        if position == 'manager':
-            if not emp.is_admin:
-                abort(401)
+        if position == 'manager' and not emp.is_admin:
+            abort(401)
         
         return emp
             
@@ -36,22 +35,23 @@ class Security:
 @jwt_required()
 def get_all_employees():
     Security.authorize('manager')
-    #Extract all employees/json conversion & execution & query statement all in one.
-    return EmployeeSchema(many=True).dump(db.session.execute(db.select(Employee)).scalars())
+    return EmployeeSchema(many=True).dump(data_retriever(Employee))
 
     
 @auth.route('/<int:id>/employee/')
 @jwt_required()
 def get_one_employee(id):
     Security.authorize('manager')
-    emp = data_retriever(Employee,id)
+    emp = data_retriever(Employee, id)
+    
     if not emp:
         return {'err': f'No employee found with id {id}'}, 404
+    
     return EmployeeSchema().dump(emp)
 
 
 @auth.route('/register/', methods=['POST'])
-def register():
+def create_employee():
     if request.json["office_pw"] == Security.office_pw:
         del request.json['office_pw']
     else:
@@ -95,12 +95,13 @@ def login():
 
 @auth.route('/self/update/', methods=['PUT', 'PATCH'])
 @jwt_required()
-def self_update():
+def employee_self_update():
     emp = Security.authorize()
     fields = EmployeeSchema().load(request.json)
 
     if not fields:
-        return {'err': 'Provide at least one field to update.'}, 400
+        return {'err': 'At least one of the field required:'
+                "'username', 'password', 'f_name', 'l_name', 'ph'"}, 400
     
     emp.username = fields.get('username') or emp.username
     emp.password = bcrypt.generate_password_hash(fields.get('password')).decode('utf8') or emp.password
@@ -118,11 +119,10 @@ def self_update():
     
 @auth.route('/<int:id>/discharge/', methods=['DELETE'])
 @jwt_required()
-def delete_emp(id):
+def delete_employee(id):
     Security.authorize('manager')
-    #Select an employee whose id matches with the given id in the uri parameter
-    stmt = db.select(Employee).filter_by(id=id)
-    emp = db.session.scalar(stmt)
+
+    emp = data_retriever(Employee, id)
 
     if not emp:
         return {'err': f"Employee not found with matching id {id}"}, 404

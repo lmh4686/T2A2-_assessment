@@ -1,9 +1,9 @@
 from models.models import Model
 from models.employees import Employee
 from models.brands import Brand
-from models.bodies import Body
-from models.cars import Car
-from models.assigned_cars import AssignedCar
+from models.trims import Trim
+from models.stocks import Stock
+from models.assigned_vehicles import AssignedVehicle
 from init import db, bcrypt
 from flask import Blueprint
 from datetime import datetime, date
@@ -51,75 +51,73 @@ def seed_db():
     ]
     db.session.add_all(brands)
     
-    bodies = [
-        Body(
-            type = 'Suv',
-            size = 'Medium',          
-        ),
-        Body(
-            type = 'Ute',
-            size = 'Medium',          
-        )
-    ]
-    db.session.add_all(bodies)
-    db.session.commit()
-
     models = [
         Model(
             brand = brands[0],
-            body = bodies[0],
-            name = "Wrangler",
-            trim = "Unlimited Rubicon",
-            year = 2022,
-            color = 'Black'
+            name = 'Wrangler',
+            year = 2022         
         ),
-
         Model(
             brand = brands[1],
-            body = bodies[1],
-            name = "Hilux",
-            trim = "Rugged X",
-            year = 2019,
-            color = 'White'
+            name = 'Land Cruiser',
+            year = 2017        
         )
     ]
     db.session.add_all(models)
     db.session.commit()
-    
-    cars = [
-        Car(
+
+    trims = [
+        Trim(
             model = models[0],
-            rego = '1PK8GO',
-            price = 90599,
-            driven_km = 3520
+            name = 'Unlimited Rubicon',
+            body_type = 'Suv'
         ),
-        Car(
+
+        Trim(
             model = models[1],
-            rego = '3JN8CU',
-            price = 71400,
-            driven_km = 37621
+            name = 'Sahara',
+            body_type = 'Suv'
         )
     ]
-    db.session.add_all(cars)
+    db.session.add_all(trims)
     db.session.commit()
     
-    assigned_cars = [
-        AssignedCar(
-            emp_id = employees[1].id,
-            car_id = cars[0].id,
+    stocks = [
+        Stock(
+             trim = trims[0],
+             rego = '1PK8GO',
+             price = 90599,
+             driven_km = 3520,
+             color = 'Black'
+        ),
+        Stock(
+             trim = trims[1],
+             rego = '3JN8CU',
+             price = 81400,
+             driven_km = 37621,
+             color = 'White'
+        )
+    ]
+    db.session.add_all(stocks)
+    db.session.commit()
+    
+    assigned_vehicles = [
+        AssignedVehicle(
+            employee = employees[1],
+            stock = stocks[0],
             sale_goal_date = datetime.strptime('15 Dec 2022', '%d %b %Y'),
             assigned_date = date.today(),
             status = 'Ongoing'
         ),
-        AssignedCar(
-            emp_id = employees[1].id,
-            car_id = cars[1].id,
+        AssignedVehicle(
+            employee = employees[1],
+            stock = stocks[1],
             sale_goal_date = datetime.strptime('15 Jan 2023', '%d %b %Y'),
             assigned_date = date.today(),
             status = 'Ongoing'
         )
     ]
-    db.session.add_all(assigned_cars)
+    db.session.add_all(assigned_vehicles)
     db.session.commit()
     
     print("Table seeded")

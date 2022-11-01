@@ -20,7 +20,7 @@ class Employee(db.Model):
     ph = db.Column(db.String, unique=True)
     is_admin = db.Column(db.Boolean, default=False)
     
-    assigned_cars = db.relationship("AssignedCar", back_populates="employee", cascade="all, delete")
+    assigned_vehicles = db.relationship("AssignedVehicle", back_populates="employee", cascade="all, delete")
                 
         
 class EmployeeSchema(ma.Schema):

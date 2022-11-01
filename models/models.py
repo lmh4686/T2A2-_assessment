@@ -1,30 +1,34 @@
 from init import db, ma
-from marshmallow.validate import And, Regexp, Length
+from marshmallow.validate import And, Regexp, Length, Range
+from datetime import datetime
+from marshmallow import validates, ValidationError, fields
 
 class Model(db.Model):
     __tablename__ = 'models'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
-    trim = db.Column(db.String(20), nullable=False)
     year = db.Column(db.Integer, nullable=False)
-    color = db.Column(db.String(15), nullable=False)
     
     brand_id = db.Column(db.Integer, db.ForeignKey("brands.id"), nullable=False)
-    body_id = db.Column(db.Integer, db.ForeignKey("bodies.id"), nullable=False)
     
-    cars = db.relationship(
-        "Car",
+    trims = db.relationship(
+        "Trim",
         backref="model"
     )
 
 class ModelSchema(ma.Schema):
     class Meta:
         ordered = True
-        fields = ('id', 'brand_id', 'car_id', 'name', 'trim', 'year', 'color')
-        
-    color = ma.String(validate=And(Length(min=2, max=15), 
-                                   Regexp('^[a-zA-Z]+$', 
-                                          error= "Must be only English alphabets")))
+        fields = ('id', 'brand_id', 'name', 'year')
     
+    # Exclude required=True for PUT/PATCH operations
+    name = ma.String(validate=And(Length(min=2, max=20),
+                                  Regexp('^[a-zA-Z0-9 ]+$', 
+                                         error="Only English alphabets, numbers, space are allowed")))
+    year = ma.Integer(validate=Range(min=1900, max=datetime.now().year + 1))
+    brand_id = ma.Integer(validate=Range(min=1))
+    
+    
+
     
