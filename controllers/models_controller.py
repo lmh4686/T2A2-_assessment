@@ -61,22 +61,25 @@ def update(id):
     if not model:
         return {'err': f'The model id {id} not found in the Model'}, 404
     
-    # Select a model that has the same values with the fields except primary key.
-    # .capitalize() won't work for fields.get().
-    stmt = db.select(Model).filter_by(
-        name=fields["name"].capitalize() if "name" in fields else model.name, 
-        year=fields.get("year") or model.year, 
-        brand_id=fields.get("brand_id") or model.brand_id)
     
+    temp_name=fields["name"].capitalize() if "name" in fields else model.name, 
+    temp_year=fields.get("year") or model.year, 
+    temp_brand_id=fields.get("brand_id") or model.brand_id
+    
+    # Select a model that has the same values with the fields except primary key.
+    stmt = db.select(Model).filter_by(
+                                      name= temp_name, 
+                                      year= temp_year, 
+                                      brand_id= temp_brand_id)
     duplication = db.session.scalar(stmt)
 
     if duplication:
         db.session.delete(model)
         return {'err': 'The record already exists'}, 409
 
-    model.name = fields["name"].capitalize() if "name" in fields else model.name
-    model.year = fields.get("year") or model.year
-    model.brand_id = fields.get("brand_id") or model.brand_id
+    model.name = temp_name
+    model.year = temp_year
+    model.brand_id = temp_brand_id
     
     try:
         db.session.commit()
