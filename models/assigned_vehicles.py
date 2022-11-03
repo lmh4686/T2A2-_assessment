@@ -4,7 +4,7 @@ from datetime import timedelta, date
 
 
 fk_validator = ma.Integer(validate=Range(min=1))
-VALID_STATUS = ("Ongoing", "Over due", "Sold")
+VALID_STATUS = ("Ongoing", "Overdue", "Sold")
 
 
 class AssignedVehicle(db.Model):
@@ -28,5 +28,6 @@ class AssignedVehicleSchema(ma.Schema):
         
     emp_id = fk_validator
     stock_id = fk_validator
-    sale_goal_date = ma.Date(validate=Range(min= date.today() + timedelta(weeks=3)))
+    sale_goal_date = ma.Date(validate=Range(min= date.today() + timedelta(weeks=3),
+                                            max= date.today() + timedelta(weeks=15)))
     status = ma.String(load_default='Ongoing', validate=OneOf(VALID_STATUS))

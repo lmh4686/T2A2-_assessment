@@ -43,40 +43,35 @@ def seed_db():
             password = bcrypt.generate_password_hash('emp2123').decode('utf8'),
             f_name = 'John',
             l_name = 'Wilson',
-            ph = '0452365423',
-            is_admin = True
+            ph = '0452365423'
         ),
         Employee(
             username = 'emp3@email.com',
             password = bcrypt.generate_password_hash('emp3123').decode('utf8'),
             f_name = 'Stuart',
             l_name = 'Park',
-            ph = '0329846521',
-            is_admin = True
+            ph = '0329846521'
         ),
         Employee(
             username = 'emp4@email.com',
             password = bcrypt.generate_password_hash('emp4123').decode('utf8'),
             f_name = 'John',
             l_name = 'Terry',
-            ph = '0321367952',
-            is_admin = True
+            ph = '0321367952'
         ),
         Employee(
             username = 'emp5@email.com',
             password = bcrypt.generate_password_hash('emp5123').decode('utf8'),
             f_name = 'Susan',
             l_name = 'Morgan',
-            ph = '0846317955',
-            is_admin = True
+            ph = '0846317955'
         ),
         Employee(
             username = 'emp6@gmail.com',
             password = bcrypt.generate_password_hash('emp6123').decode('utf8'),
             f_name = 'Phil',
             l_name = 'Robert',
-            ph = '0645953457',
-            is_admin = True
+            ph = '0645953457'
         ),
         
     ]
@@ -428,14 +423,40 @@ def seed_db():
         AssignedVehicle(
             employee = employees[1],
             stock = stocks[0],
-            sale_goal_date = datetime.strptime('15 Dec 2022', '%d %b %Y'),
-            assigned_date = date.today()
+            sale_goal_date = datetime.strptime('15 Feb 2022', '%d %b %Y'),
+            assigned_date = datetime.strptime('09 Dec 2021', '%d %b %Y'),
         ),
         AssignedVehicle(
             employee = employees[1],
             stock = stocks[1],
-            sale_goal_date = datetime.strptime('15 Jan 2023', '%d %b %Y'),
-            assigned_date = date.today()
+            sale_goal_date = datetime.strptime('15 Jan 2020', '%d %b %Y'),
+            assigned_date = datetime.strptime('09 Nov 2021', '%d %b %Y'),
+            status = 'Sold'
+        ),
+        AssignedVehicle(
+            employee = employees[2],
+            stock = stocks[2],
+            sale_goal_date = datetime.strptime('05 Nov 2023', '%d %b %Y'),
+            assigned_date = datetime.strptime('09 Oct 2022', '%d %b %Y')
+        ),
+        AssignedVehicle(
+            employee = employees[3],
+            stock = stocks[3],
+            sale_goal_date = datetime.strptime('25 Mar 2020', '%d %b %Y'),
+            assigned_date = datetime.strptime('09 Feb 2020', '%d %b %Y'),
+            status = 'Sold'
+        ),
+        AssignedVehicle(
+            employee = employees[3],
+            stock = stocks[4],
+            sale_goal_date = datetime.strptime('14 Nov 2022', '%d %b %Y'),
+            assigned_date = datetime.strptime('09 Oct 2022', '%d %b %Y')
+        ),
+        AssignedVehicle(
+            employee = employees[4],
+            stock = stocks[5],
+            sale_goal_date = datetime.strptime('15 Mar 2022', '%d %b %Y'),
+            assigned_date = datetime.strptime('09 Jan 2022', '%d %b %Y')
         )
     ]
     db.session.add_all(assigned_vehicles)
