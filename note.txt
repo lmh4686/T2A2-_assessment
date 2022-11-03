@@ -1,3 +1,7 @@
 sqlalchemy Email validator for cli?
 Change timedelta to minutes on completion
 Random JWT secret key?
+Better Error than ValidationError for functions file?
+    # category = fields.Nested("CategorySchema", only=('name',))
+    # brand = fields.Nested("BrandSchema", only=('name',))
+    # employee = fields.Nested("EmployeeSchema", only=('id', 'name', 'is_admin',))

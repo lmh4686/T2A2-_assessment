@@ -33,11 +33,52 @@ def seed_db():
         ),
         Employee(
             username = 'employee1@email.com',
-            password = bcrypt.generate_password_hash('employee1123').decode('utf8'),
+            password = bcrypt.generate_password_hash('emp123').decode('utf8'),
             f_name = 'Billy',
             l_name = 'William',
             ph = '0987654210'
-        )
+        ),
+        Employee(
+            username = 'emp2@email.com',
+            password = bcrypt.generate_password_hash('emp2123').decode('utf8'),
+            f_name = 'John',
+            l_name = 'Wilson',
+            ph = '0452365423',
+            is_admin = True
+        ),
+        Employee(
+            username = 'emp3@email.com',
+            password = bcrypt.generate_password_hash('emp3123').decode('utf8'),
+            f_name = 'Stuart',
+            l_name = 'Park',
+            ph = '0329846521',
+            is_admin = True
+        ),
+        Employee(
+            username = 'emp4@email.com',
+            password = bcrypt.generate_password_hash('emp4123').decode('utf8'),
+            f_name = 'John',
+            l_name = 'Terry',
+            ph = '0321367952',
+            is_admin = True
+        ),
+        Employee(
+            username = 'emp5@email.com',
+            password = bcrypt.generate_password_hash('emp5123').decode('utf8'),
+            f_name = 'Susan',
+            l_name = 'Morgan',
+            ph = '0846317955',
+            is_admin = True
+        ),
+        Employee(
+            username = 'emp6@gmail.com',
+            password = bcrypt.generate_password_hash('emp6123').decode('utf8'),
+            f_name = 'Phil',
+            l_name = 'Robert',
+            ph = '0645953457',
+            is_admin = True
+        ),
+        
     ]
     db.session.add_all(employees)
     
@@ -47,7 +88,22 @@ def seed_db():
         ),
         Brand(
             name = 'Toyota'
-        )
+        ),
+        Brand(
+            name = 'Ford'
+        ),
+        Brand(
+            name = 'Bmw'
+        ),
+        Brand(
+            name = 'Benz'
+        ),
+        Brand(
+            name = 'Genesis'
+        ),
+        Brand(
+            name = 'Mazda'
+        ),
     ]
     db.session.add_all(brands)
     
@@ -58,10 +114,110 @@ def seed_db():
             year = 2022         
         ),
         Model(
-            brand = brands[1],
-            name = 'Land Cruiser',
+            brand = brands[0],
+            name = 'Gladiator',
             year = 2017        
-        )
+        ),
+        Model(
+            brand = brands[0],
+            name = 'Grand cherokee',
+            year = 2022         
+        ),
+        Model(
+            brand = brands[1],
+            name = 'Land cruiser',
+            year = 2017        
+        ),
+        Model(
+            brand = brands[1],
+            name = 'Hilux',
+            year = 2015        
+        ),
+        Model(
+            brand = brands[1],
+            name = 'Camry',
+            year = 2013        
+        ),
+        Model(
+            brand = brands[2],
+            name = 'Bronco',
+            year = 2009         
+        ),
+        Model(
+            brand = brands[2],
+            name = 'Ranger',
+            year = 2012        
+        ),
+        Model(
+            brand = brands[2],
+            name = 'Everest',
+            year = 2008         
+        ),
+        Model(
+            brand = brands[2],
+            name = 'Mustang',
+            year = 2022        
+        ),
+        Model(
+            brand = brands[3],
+            name = 'X5',
+            year = 2011         
+        ),
+        Model(
+            brand = brands[3],
+            name = 'Bmw 3',
+            year = 2005        
+        ),
+        Model(
+            brand = brands[3],
+            name = 'Bmw 6',
+            year = 2014         
+        ),
+        Model(
+            brand = brands[4],
+            name = 'Glc class',
+            year = 2019        
+        ),
+        Model(
+            brand = brands[4],
+            name = 'A class',
+            year = 2011         
+        ),
+        Model(
+            brand = brands[4],
+            name = 'C class',
+            year = 2005        
+        ),
+        Model(
+            brand = brands[5],
+            name = 'G80',
+            year = 2020         
+        ),
+        Model(
+            brand = brands[5],
+            name = 'Gv90',
+            year = 2022        
+        ),
+        Model(
+            brand = brands[5],
+            name = 'G60',
+            year = 2021        
+        ),
+        Model(
+            brand = brands[6],
+            name = 'Mazda 3',
+            year = 2005        
+        ),
+        Model(
+            brand = brands[6],
+            name = 'Mazda 6',
+            year = 2014         
+        ),
+        Model(
+            brand = brands[6],
+            name = 'Cx9',
+            year = 2019
+        )   
     ]
     db.session.add_all(models)
     db.session.commit()
@@ -72,12 +228,81 @@ def seed_db():
             name = 'Unlimited Rubicon',
             body_type = 'Suv'
         ),
-
+        Trim(
+            model = models[0],
+            name = 'Rubicon',
+            body_type = 'Suv'
+        ),
+        Trim(
+            model = models[0],
+            name = 'Night eagle',
+            body_type = 'Suv'
+        ),
         Trim(
             model = models[1],
+            name = 'Rubicon',
+            body_type = 'Ute'
+        ),
+        Trim(
+            model = models[2],
+            name = 'L limited',
+            body_type = 'Suv'
+        ),
+        Trim(
+            model = models[2],
+            name = 'L summit reserve',
+            body_type = 'Suv'
+        ),
+        Trim(
+            model = models[2],
+            name = 'Night eagle',
+            body_type = 'Suv'
+        ),
+        Trim(
+            model = models[3],
+            name = 'Gr sport',
+            body_type = 'Suv'
+        ),
+        Trim(
+            model = models[3],
+            name = 'Gx',
+            body_type = 'Suv'
+        ),
+        Trim(
+            model = models[3],
             name = 'Sahara',
             body_type = 'Suv'
-        )
+        ),
+        Trim(
+            model = models[4],
+            name = 'Rugged x',
+            body_type = 'Ute'
+        ),
+        Trim(
+            model = models[4],
+            name = 'Rouge',
+            body_type = 'Ute'
+        ),
+        Trim(
+            model = models[4],
+            name = 'Sr',
+            body_type = 'Ute'
+        ),
+        Trim(
+            model = models[5],
+            name = 'Ascent',
+            body_type = 'Sedan'
+        ),
+        Trim(
+            model = models[5],
+            name = 'CSi',
+            body_type = 'Sedan'
+        ),
+        Trim(
+            model = models[1],
+            name = 'Atara r',
+            body_type = 'Sedan'
+        ),
     ]
     db.session.add_all(trims)
     db.session.commit()
@@ -96,7 +321,105 @@ def seed_db():
              price = 81400,
              driven_km = 37621,
              color = 'White'
-        )
+        ),
+        Stock(
+             trim = trims[3],
+             rego = '1KN8PN',
+             price = 65322,
+             driven_km = 53520,
+             color = 'Green'
+        ),
+        Stock(
+             trim = trims[2],
+             rego = '8MS3LS',
+             price = 93561,
+             driven_km = 376,
+             color = 'Red'
+        ),
+        Stock(
+             trim = trims[3],
+             rego = '5LM2IR',
+             price = 20874,
+             driven_km = 190000,
+             color = 'Green'
+        ),
+        Stock(
+             trim = trims[4],
+             rego = '9NB0KS',
+             price = 15865,
+             driven_km = 176211,
+             color = 'Gray'
+        ),
+        Stock(
+             trim = trims[5],
+             rego = '8KJ2NZ',
+             price = 52000,
+             driven_km = 53520,
+             color = 'Black'
+        ),
+        Stock(
+             trim = trims[6],
+             rego = '1NM52UD',
+             price = 8999,
+             driven_km = 237621,
+             color = 'Beige'
+        ),
+        Stock(
+             trim = trims[7],
+             rego = '5MZ9QY',
+             price = 23548,
+             driven_km = 120000,
+             color = 'Purple'
+        ),
+        Stock(
+             trim = trims[8],
+             rego = '5FJ9BX',
+             price = 78500,
+             driven_km = 37621,
+             color = 'Sand'
+        ),
+        Stock(
+             trim = trims[9],
+             rego = '8BD8JD',
+             price = 32500,
+             driven_km = 23520,
+             color = 'Blue'
+        ),
+        Stock(
+             trim = trims[10],
+             rego = '7BN1SL',
+             price = 98520,
+             driven_km = 23,
+             color = 'White'
+        ),
+        Stock(
+             trim = trims[11],
+             rego = '8ND1VD',
+             price = 12000,
+             driven_km = 233520,
+             color = 'Orange'
+        ),
+        Stock(
+             trim = trims[12],
+             rego = '5MC83S',
+             price = 15300,
+             driven_km = 57621,
+             color = 'Grey'
+        ),
+        Stock(
+             trim = trims[13],
+             rego = '5MX8BX',
+             price = 74900,
+             driven_km = 23520,
+             color = 'Black'
+        ),
+        Stock(
+             trim = trims[14],
+             rego = '5MN6HF',
+             price = 45630,
+             driven_km = 29850,
+             color = 'Black'
+        ),
     ]
     db.session.add_all(stocks)
     db.session.commit()
@@ -106,15 +429,13 @@ def seed_db():
             employee = employees[1],
             stock = stocks[0],
             sale_goal_date = datetime.strptime('15 Dec 2022', '%d %b %Y'),
-            assigned_date = date.today(),
-            status = 'Ongoing'
+            assigned_date = date.today()
         ),
         AssignedVehicle(
             employee = employees[1],
             stock = stocks[1],
             sale_goal_date = datetime.strptime('15 Jan 2023', '%d %b %Y'),
-            assigned_date = date.today(),
-            status = 'Ongoing'
+            assigned_date = date.today()
         )
     ]
     db.session.add_all(assigned_vehicles)

@@ -61,7 +61,6 @@ def update(id):
     if not model:
         return {'err': f'The model id {id} not found in the Model'}, 404
     
-    
     temp_name=fields["name"].capitalize() if "name" in fields else model.name, 
     temp_year=fields.get("year") or model.year, 
     temp_brand_id=fields.get("brand_id") or model.brand_id
@@ -74,7 +73,6 @@ def update(id):
     duplication = db.session.scalar(stmt)
 
     if duplication:
-        db.session.delete(model)
         return {'err': 'The record already exists'}, 409
 
     model.name = temp_name

@@ -26,8 +26,8 @@ class Security:
             abort(401)
         
         if position == 'manager' and not emp.is_admin:
-            abort(401)
-        
+            abort(401, 'Only managers are granted to access')
+     
         return emp
             
         
