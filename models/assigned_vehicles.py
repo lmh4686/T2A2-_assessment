@@ -23,9 +23,11 @@ class AssignedVehicle(db.Model):
     
 
 class AssignedVehicleSchema(ma.Schema):
+    stock = fields.Nested('StockSchema', only=['rego', 'price', 'color', 'trim'])
+    employee = fields.Nested('EmployeeSchema', only=['f_name', 'l_name', 'ph'])
     class Meta:
         ordered = True
-        fields = ('id', 'stock_id', 'emp_id', 'assigned_date', 'sale_goal_date', 'status')
+        fields = ('id', 'assigned_date', 'sale_goal_date', 'status', 'emp_id', 'employee', 'stock_id', 'stock')
         
     emp_id = fk_validator
     stock_id = fk_validator

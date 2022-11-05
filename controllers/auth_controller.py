@@ -19,7 +19,7 @@ class Security:
         emp_id = get_jwt_identity() 
         # Select an employee whose id is equal to current jwt's identity
         stmt = db.select(Employee).filter_by(id=emp_id) 
-        # execute stmt and return the employee satisfied stmt.
+        # Get one of stmt
         emp = db.session.scalar(stmt)
         
         if not emp:
@@ -74,7 +74,7 @@ def create_employee():
     except IntegrityError:        
         return {"err": "Existing username or phone number."}, 409
 
-    token = create_access_token(identity=str(employee.id), expires_delta=timedelta(days=15))
+    token = create_access_token(identity=str(employee.id), expires_delta=timedelta(minutes=15))
     
     return {"New employee": EmployeeSchema().dump(employee), "Token": token}, 201
     
@@ -84,11 +84,12 @@ def login():
     fields = request.json
     #Select an employee whose username is equal to username field in request body.
     stmt = db.select(Employee).filter_by(username = fields['username'])
+    # get one of stmt
     employee = db.session.scalar(stmt)
     if not employee or not bcrypt.check_password_hash(employee.password, fields['password']):
-        return {"err": "Wrong username or password"}, 401 #Unauthorized
+        return {"err": "Wrong username or password"}, 401 
     
-    token = create_access_token(identity=employee.id, expires_delta=timedelta(days=15))
+    token = create_access_token(identity=employee.id, expires_delta=timedelta(minutes=15))
 
     return {"Logged in employee": EmployeeSchema(exclude=['username']).dump(employee), "Token": token}
 

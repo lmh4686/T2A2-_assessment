@@ -1,7 +1,7 @@
 from init import db, ma
 from marshmallow.validate import And, Regexp, Length, Range
 from datetime import datetime
-from marshmallow import validates, ValidationError, fields
+from marshmallow import fields
 
 class Model(db.Model):
     __tablename__ = 'models'
@@ -18,9 +18,10 @@ class Model(db.Model):
     )
 
 class ModelSchema(ma.Schema):
+    brand = fields.Nested('BrandSchema', only=['name'])
     class Meta:
         ordered = True
-        fields = ('id', 'brand_id', 'name', 'year')
+        fields = ('id', 'name', 'year', 'brand_id', 'brand')
     
     # Exclude required=True for PUT/PATCH operations
     name = ma.String(validate=And(Length(min=2, max=20),

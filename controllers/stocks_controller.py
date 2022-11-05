@@ -1,11 +1,7 @@
-from dataclasses import fields
-from sqlite3 import TimeFromTicks
 from flask import Blueprint, request
 from init import db
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from models.stocks import Stock, StockSchema
-from models.brands import Brand
-from models.employees import Employee
 from sqlalchemy.exc import IntegrityError
 from controllers.auth_controller import Security
 from functions import data_retriever
@@ -85,10 +81,11 @@ def update_stock(id):
                                       driven_km= temp_driven_km,
                                       color=temp_color,
                                       trim_id= temp_trim_id)
+    # Get one of stmt
     duplication = db.session.scalar(stmt)
     
     if duplication:
-        return {'err': 'Record already exists'}, 409
+        return {'err': 'Stock already exists'}, 409
     
     stock.rego = temp_rego
     stock.price = temp_price

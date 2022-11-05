@@ -1,5 +1,4 @@
 from flask import Blueprint, request
-from controllers.trims_controller import duplication_checker
 from models.models import Model, ModelSchema
 from controllers.auth_controller import Security
 from init import db
@@ -18,7 +17,7 @@ def duplicate_checker(fields):
         year=fields['year'],
         brand_id=fields['brand_id']
     )
-    
+    # Get one of stmt
     duplication = db.session.scalar(stmt)
     return duplication
 
@@ -70,6 +69,7 @@ def update(id):
                                       name= temp_name, 
                                       year= temp_year, 
                                       brand_id= temp_brand_id)
+    # Get one of stmt
     duplication = db.session.scalar(stmt)
 
     if duplication:
