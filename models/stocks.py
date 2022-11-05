@@ -1,4 +1,4 @@
-from wsgiref import validate
+from marshmallow import fields
 from init import db, ma
 from marshmallow.validate import Regexp, Range, And, Length
 
@@ -23,9 +23,10 @@ class Stock(db.Model):
     
 
 class StockSchema(ma.Schema):
+    trim = fields.Nested('TrimSchema', only=['name', 'body_type', 'model'])
     class Meta:
         ordered = True 
-        fields = ('id', 'rego', 'trim_id', 'price', 'driven_km', 'color')
+        fields = ('id', 'rego', 'color', 'price', 'driven_km', 'trim_id', 'trim')
 
     rego = ma.String(validate=And(Regexp('^[A-Z0-9]+$', 
                                          error='Only capital letters and numbers are allowed.'),

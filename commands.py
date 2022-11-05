@@ -6,7 +6,7 @@ from models.stocks import Stock
 from models.assigned_vehicles import AssignedVehicle
 from init import db, bcrypt
 from flask import Blueprint
-from datetime import datetime, date
+from datetime import datetime
 
 db_commands = Blueprint("db", __name__)
 

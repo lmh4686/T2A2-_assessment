@@ -12,13 +12,5 @@ def data_retriever(model, id=None):
     # From the given model, extract all records. 
     records = db.session.execute(db.select(model)).scalars()
     return records
-
-
-def record_counter(Model, id=None):
-    count = db.session.execute(db.select(db.func.count())
-                               .select_from(Model)).scalar()
-    return count
-    
-                       
     
     

@@ -18,7 +18,7 @@ class Employee(db.Model):
     f_name = db.Column(db.String, nullable=False)
     l_name = db.Column(db.String, nullable=False)
     ph = db.Column(db.String, unique=True)
-    is_admin = db.Column(db.Boolean, default=False)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
     
     assigned_vehicles = db.relationship("AssignedVehicle", back_populates="employee", cascade="all, delete")
                 

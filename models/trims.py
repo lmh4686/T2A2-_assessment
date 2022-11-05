@@ -1,7 +1,6 @@
-from wsgiref import validate
 from init import db, ma
 from marshmallow.validate import Length, And, Regexp, OneOf, Range
-from marshmallow import validates
+from marshmallow import fields
 
 VALID_TYPES = ("Suv", "Ute", "Sedan", "Wagon", "Convertible", "Hatch", "Coupe", "Van")
 
@@ -17,9 +16,10 @@ class Trim(db.Model):
     stocks = db.relationship("Stock",  back_populates='trim')
 
 class TrimSchema(ma.Schema):
+    model = fields.Nested('ModelSchema', only=['name', 'year', 'brand'])
     class Meta:
         ordered = True
-        fields = ("id", "model_id", "name", "body_type")
+        fields = ("id", "name", "body_type", "model_id", "model")
             
     body_type = ma.String(validate=OneOf(VALID_TYPES))
     name = ma.String(validate=And(Length(min=2, max=20),

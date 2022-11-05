@@ -10,13 +10,14 @@ trims = Blueprint('trims', __name__, url_prefix='/trims/')
 
 
 def duplication_checker(fields):
-    # select the record from the trim that all rows are the same with fields's values except primary key.
+    # select the record from the trim that 
+    # all rows are the same with fields's values except primary key.
     stmt = db.select(Trim).filter_by(
         name=fields['name'].capitalize(),
         body_type=fields['body_type'],
         model_id=fields['model_id'],
         )
-    
+    # Get one stmt
     duplication = db.session.scalar(stmt)
     return duplication
 
@@ -79,6 +80,7 @@ def update_trim(id):
     stmt = db.select(Trim).filter_by(name= temp_name,
                                      body_type= temp_body_type,
                                      model_id= temp_model_id)
+    # Get one of stmt
     duplication = db.session.scalar(stmt)
     
     if duplication:
