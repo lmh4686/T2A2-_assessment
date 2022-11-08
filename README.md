@@ -77,6 +77,8 @@ Columns:
 
 # Relationships
 
+*Common fact: The 'Many' side table will always have the foreign key in one to many relationship.*
+
 ## Brands - Models
 
 ### ERD
@@ -221,7 +223,11 @@ An assigned vehicle can have only one stock.
 
 <img src="docs/stock.png">  
 
-Other principles are the same as others but this case has:
+Since this is one to one relationship, the model that depends on the other should have the foreign key.  
+Because, for example, if a record from the model 'Stock' doesn't exist, any record from the model 'Assigned_vehicle' can't be created.    
+
+
+Other principles are the same as Trims-Stocks relationship but this case has:
 
 1. `cascade="all, delete"`
     - On deletion of a record from the model Stock, the corresponding record will be deleted in child's model (Assigned_Vehicles) automatically.
@@ -230,7 +236,7 @@ Other principles are the same as others but this case has:
 
 <img src="docs/av.png">  
 
-Same principle with the others.
+Same principle with the Trims-Stocks relationship.
 
 ### Database
 
@@ -411,7 +417,7 @@ Since jwt includes user's identity, developers can extract it and utilize it for
 Main usages in this API:
 
 - Generating JWT for every employee registration.
-- Authenticating employees for every access by requiring to pass their JWT.
+- Authenticating employees for every access except registering by requiring to pass their JWT.
 - Extracting employees' id from jwt and utilize it to get relative records.
 
 ## psycopg2
@@ -468,3 +474,95 @@ Usages in this app:
 - Generating current date for certain model's column
 - Setting the jwt's expiry time
 - Setting the marshmallow validation condition for certain model's column.
+
+# Used DBMS
+
+PostgreSQL is used as a DBMS in this project.  
+PostgreSQL is an advanced, object relational DBMS that supports both SQL
+and JSON. SQL is used for relational db and JSON is used for non-relational db.  
+It is open source but supports performance tuning and advanced data
+types which are typically only available in paid commercial dbms.  
+It is used to store the primary data for this web applications.  
+
+Advantages of PostgreSQL are as follows:
+
+1. Free mutable source code available to use.  
+    - Users can download source code from github or postgres official website. This will reduce work time.
+2. Offers 43 built-in data types that are effective to use in various
+situations.  
+    - For example, it has date, money, point, etc data types that can be
+advantageous to cover diverse users’ needs.
+3. Compatible with dynamic web applications.  
+    - Displays different information per user’s view.
+4. Highly customizable
+    - It can create user defined data types, functions, triggers, etc.
+
+Disadvantages of PostgreSQL are as follows:
+
+1. Difficult installation process for beginners.  
+    - It requires users to run some complex commands to install.
+2. Less skilled professional users than the others.  
+    - Mainly because of the inefficient replication process and weaker ecosystem
+3. Not the best in terms of speed compared to others.  
+    - Because most of its work consumes memory and when it’s filled with heavy
+writings, it will cause the system to slow.
+4. Relatively less compatible with open source app.
+    - For example, a number of open source app support MySQL but not PostgreSQL.
+
+# ORM
+
+## Functionality
+
+The main function of Object Relational Mapping(ORM) is letting developers query and manipulate data from a database by using OOP language instead of SQL.
+
+<img src="docs/ORM_DIA.png">
+
+ORM can :
+
+1. Create models  
+   It can set table's name and columns.  
+   Columns can have data type and constraints (built-in, custom).  
+   It can define relationship with other table.
+
+2. Query data  
+   It can query data with using filter and aggregate functions to achieve accurate result.
+
+3. Update data  
+   It can change an existing raw to new raw.
+
+4. Insert data  
+   It can insert data into columns.
+
+5. Validate inputs  
+   It raises an error if the constraints are not complied.  
+   
+6. Handle error  
+   Developers can import error from the ORM and utilize it to catch the error or can set custom error message by using custom validator.
+   
+## Pros and Cons of using ORM
+
+### Pros
+
+1. Reduce risk of SQL injection  
+   Because queries are prepared and sanitized.
+
+2. Increase maintainability  
+   Because a model is only written once and all corresponding codes depend on the model so it's easier to update and apply the changes.
+
+3. Increase productivity  
+   Because developers can leverage the same language syntax to manipulate data.  
+   For example, if developers use Python for the project they can leverage Python language syntax to manipulate data.
+
+4. Flexible choice of DBMS
+   With a right connector, it can work with many different DBMS.
+
+### Cons
+
+1. Complex statement  
+   Some simple queries can be simpler than using SQL but complex queries can be lengthy and even more complex than SQL.
+2. Have to learn syntax  
+   It will use the same language syntax that is used for development, but it mostly need to be combined with the ORM syntax that can be complicated. 
+3. Generally slower than using SQL  
+   Because ORM requires multiple queries to extract all data developers need.
+4. Can not 100% replace the SQL  
+   Since SQL is very powerful language, there are a number of work that ORM can't implement.  
