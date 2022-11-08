@@ -365,12 +365,12 @@ The problems have been solved by:
     - For example, only managers are authorized to assign vehicles.
 
 # API documentation by resource
-*Note: Due to limit of number of documnet publishing, some only available in photos*
-## 1. <a href= "https://documenter.getpostman.com/view/24302062/2s8YYPGfec">Assigned Vehicles</a>
+*Note: Due to limit of number of documnet publishing, had to put two of different resource into one*
+## 1. <a href= "https://documenter.getpostman.com/view/24302062/2s8YYPGfec#intro">Auth - Assigned Vehicles</a>
 
-## 2. <a href = "https://documenter.getpostman.com/view/24302062/2s8YYPFKRB"> Employees </a>
+## 2. <a href = "https://documenter.getpostman.com/view/24302062/2s8YYPFKRB"> Brands - Models </a>
 
-## 3. <a href = "https://documenter.getpostman.com/view/24302062/2s8YYPHLJr">Brands</a>
+## 3. <a href = "https://documenter.getpostman.com/view/24302062/2s8YYPHLJr">Trims - Stocks</a>
 
 ## 4. <a href = "">Models</a>
 
