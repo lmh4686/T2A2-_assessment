@@ -105,7 +105,7 @@ def employee_self_update():
                 "'username', 'password', 'f_name', 'l_name', 'ph'"}, 400
     
     emp.username = fields.get('username') or emp.username
-    emp.password = bcrypt.generate_password_hash(fields.get('password')).decode('utf8') or emp.password
+    emp.password = bcrypt.generate_password_hash(fields['password']).decode('utf8') if 'password' in fields else emp.password
     emp.f_name = fields["f_name"].capitalize() if "f_name" in fields else emp.f_name
     emp.l_name = fields["l_name"].capitalize() if "l_name" in fields else emp.l_name
     emp.ph = fields.get('ph') or emp.ph

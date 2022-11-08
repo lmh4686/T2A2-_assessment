@@ -328,7 +328,7 @@ The key problems to be solved in terms of functionality were:
     - To track status of the vehicle for further management and decision. (please check the next section for more information)
 
 
-The main function of this API is allowing managers to assign vehicles to dealers and dealers can check which vehicles have been assigned to them.  
+The main function of this API is allowing managers to assign vehicles to dealers and dealers easily checking the vehicles that have been only assigned to them.  
 It provides following information :
 
 - A responsible employee for the assignment.
@@ -364,7 +364,15 @@ The problems have been solved by:
     - To provide different authorization.
     - For example, only managers are authorized to assign vehicles.
 
-<hr>
+# API documentation by resource
+*Note: Due to limit of number of documnet publishing, some only available in photos*
+## 1. <a href= "https://documenter.getpostman.com/view/24302062/2s8YYPGfec">Assigned Vehicles</a>
+
+## 2. <a href = "https://documenter.getpostman.com/view/24302062/2s8YYPFKRB"> Employees </a>
+
+## 3. <a href = "https://documenter.getpostman.com/view/24302062/2s8YYPHLJr">Brands</a>
+
+## 4. <a href = "">Models</a>
 
 # Used third party services
 
