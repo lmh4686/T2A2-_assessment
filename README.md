@@ -1,6 +1,7 @@
-
-
 # Introduction
+## <a href = "https://github.com/lmh4686/T2A2-_assessment">Git repository</a>
+
+<hr>
 
 ## Project purpose
 
