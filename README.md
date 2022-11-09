@@ -1,3 +1,5 @@
+
+
 # Introduction
 
 ## Project purpose
@@ -77,7 +79,7 @@ Columns:
 
 # Relationships
 
-*Common fact: The 'Many' side table will always have the foreign key in one to many relationship.*
+*Commonly applied: The 'Many' side table will always have the foreign key in one to many relationship. And foreign key must be the 'One' side table's PK that uniquely identified.*
 
 ## Brands - Models
 
@@ -91,7 +93,7 @@ A model can only have one brand.
 
 <img src="docs/Brand.png">
 
-`backref` is a legacy way to refer parent's table.  
+`backref` is a legacy way to define what parent table should be called in child's model. This value can be used in child's model Schema and when referring the foreign key column that comes from the parent table.
 In the case of using `backref`, it only requires to define a relationship in the parent's model.  
 
 <b>Defining one to many relationship:</b>  
@@ -217,20 +219,19 @@ Principles are the same as others.
 
 One to optional One  
 A stock can be assigned 0 to one time.  
-An assigned vehicle can have only one stock. 
+An assigned vehicle can have only one stock.  
+Since this is one to one relationship, the table that depends on the other should have the foreign key.  
+Because, for example, if 'Stocks' doesn't have any record, 'Assigned Vehicles' can't have any record either.  
+But it makes sense that 'Stocks' records exist and haven't been assigned yet.  Therefore, 'Assigned_Vehicles' depends on the 'Stocks'.
 
 ### SQLAlchemy
 
 <img src="docs/stock.png">  
 
-Since this is one to one relationship, the model that depends on the other should have the foreign key.  
-Because, for example, if a record from the model 'Stock' doesn't exist, any record from the model 'Assigned_vehicle' can't be created.    
-
-
 Other principles are the same as Trims-Stocks relationship but this case has:
 
 1. `cascade="all, delete"`
-    - On deletion of a record from the model Stock, the corresponding record will be deleted in child's model (Assigned_Vehicles) automatically.
+    - On deletion of a record from the model Stock, the corresponding record will be deleted in child's model (AssignedVehicle) automatically.
 2. `uselist=False`
     - Indicates One to One relationship.  
 
@@ -274,7 +275,7 @@ stock_id INTEGER NOT NULL,
 FOREIGN KEY(stock_id) REFERENCES stocks(id) ON DELETE CASCADE);
 ```
 
-In the child table's foreign key constraint section, include `ON DELETE CASCADE` at the end.
+In the child table's foreign key defining section, add `ON DELETE CASCADE` at the end.
 
 ## Employees - Assigned_vehicles
 
@@ -282,7 +283,7 @@ In the child table's foreign key constraint section, include `ON DELETE CASCADE`
 
 One to optional many  
 An employee can have many assigned vehicles.  
-An assigned vehicle can only have one employee.
+An assigned vehicle can only be managed by one employee.
 
 ### SQLAlchemy
 
@@ -312,7 +313,7 @@ Same principle and issue as Stock - Assigned_vehicle case.
 
 ## Functionality
 
-This API is built to serve used car sales industries as a vehicles management system that can be utilized internally.  
+The main features of this API is offering stocks, tasks and employees management functions that can be utilized internally.  
 The key problems to be solved in terms of functionality were:
 
 1. Employee registration
@@ -325,7 +326,7 @@ The key problems to be solved in terms of functionality were:
     - To assign vehicles to dealers.
 4. Assigning vehicles to the dealers
     - So dealers can check which vehicles have been assigned to them with other necessary information.
-    - To track status of the vehicle for further management and decision. (please check the next section for more information)
+    - To track status of the vehicle to make easier for further management and decision. (please check the next section for more information)
 
 
 The main function of this API is allowing managers to assign vehicles to dealers and dealers easily checking the vehicles that have been only assigned to them.  
@@ -344,7 +345,9 @@ It provides following information :
 '*' : *By entering a specific endpoint, all status values for all records that have expired sale goal dates and 'Ongoing' status values, can be updated to have 'Overdue' status values automatically at once.*  
 
 Also, managers can filter the records by the status. For example if a manager apply 'Sold' filter, it shows only sold vehicles.  
-Then, manager can delete the sold vehicles records from the stock and the corresponding assigned vehicle record will be deleted automatically together.
+Then, manager can delete the sold vehicles records from the stock and the corresponding assigned vehicle record will be deleted automatically together. 
+
+And dealers can check which vehicles have been assigned to them by entering `/assignments/my` endpoint. It extracts dealers' id from their JWT and will return the vehicles that have been only assigned to them.
 
 ## Authentication & Authorization
 
@@ -361,18 +364,82 @@ The problems have been solved by:
     - To prevent a (some) particular employee accessing to not related data.
     - For example, an employee does not need to manipulate the other employees' assigned vehicles data or personal information.
 4. Distinguishing between 'manager' and 'employee'.
-    - To provide different authorization.
+    - To provide different authority.
     - For example, only managers are authorized to assign vehicles.
 
-# API documentation by resource
-*Note: Due to limit of number of documnet publishing, had to put two of different resource into one*
+## API documentation by resource
+
+*Note: Due to limit of number of document publishing, two different blueprints are in one document.  
+Customized messages for all validation failures and errors have been set so guidance are not included in the documents .*
+
 ## 1. <a href= "https://documenter.getpostman.com/view/24302062/2s8YYPGfec#intro">Auth - Assigned Vehicles</a>
 
 ## 2. <a href = "https://documenter.getpostman.com/view/24302062/2s8YYPFKRB"> Brands - Models </a>
 
 ## 3. <a href = "https://documenter.getpostman.com/view/24302062/2s8YYPHLJr">Trims - Stocks</a>
 
-## 4. <a href = "">Models</a>
+# Project planning
+
+## Overview
+
+<a href="https://trello.com/b/boadS03y/used-car-sales-system"> Trello</a> is used for project planning.  
+   
+<img src="docs/trello.png">  
+
+I separated development process into 4 parts which are `Define Models`, `cli commands`, `Define Schema` and `controllers`. The implementing process are in order from top to bottom and from left to right. I also set the deadline date for each card. For relatively small jobs, I gave one deadline per one part. They are `Define Models`, `cli commands` and `Define Schema`. But since `Controllers` part would take much longer than those, I set one deadline per two sections and gave myself two days to work for each pair.
+
+*In `Goal` there is a simple description of the purpose of the app.*  
+*In `ERD` there is attached ERD for the project*
+
+## Define Models
+
+<img src ="docs/model_emp.png">
+
+*One example in `Define Models`.*  
+
+This section is designed for defining model works.  
+The title `Employee` indicates the model class name to work with.  
+Check lists were used to track the process.  
+It consists of necessary considerable works for when defining a Model.  
+It's designed to create one model and move on to next section to create another model.  
+
+## cli commands
+
+<img src="docs/cli.png">
+
+*One example in `cli commands`.*  
+
+This section's title (`Employees`) indicates the table name to work with and this section shows what to check and what need to be included while dealing with cli commands. `constraints` part shows what should be checked while seeding data and `DB` part shows what need to be checked in the database after seeding data.  
+
+It is designed to follow this process when coding: 
+
+1. Seed data into the table that the title indicates.
+2. Check `constraints` part.
+3. Check `DB` part.
+4. Move on to next table section.  
+
+### Defining Schema
+
+<img src="docs/schema.png">
+
+*One example in `Defining Schema`*
+
+This section is designed for defining Schema works for each model.  
+Like others, the title shows a model name to work with.  
+The `Schema` part includes the general schema work in class `Meta`.  
+The `Validation` part shows the columns and what need to be validated for each column.
+
+### Controllers
+
+<img src="docs/controller.png">
+
+*One example in `Controllers` section.*  
+
+This section is designed for making controller works.  
+Like others, title shows a resource name to work with.  
+It has checklists for all http methods to be implemented for each resource and each checklist shows what need to be done for the http method that its title indicates.  
+
+Just like others, it's designed to work with one resource at a time, from top to bottom order. 
 
 # Used third party services
 

@@ -5,8 +5,8 @@ from marshmallow.exceptions import ValidationError
 
 
 name_constraints = ma.String(validate=Regexp(
-        '^[a-zA-Z ]+$', 
-        error="Only accept a-z, A-Z and space input"
+        '^[a-zA-Z]+$', 
+        error="Only accept English alphabets"
         ))
 
 class Employee(db.Model):
@@ -17,7 +17,7 @@ class Employee(db.Model):
     password = db.Column(db.String, nullable=False)
     f_name = db.Column(db.String, nullable=False)
     l_name = db.Column(db.String, nullable=False)
-    ph = db.Column(db.String, unique=True)
+    ph = db.Column(db.String(10), unique=True)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
     
     assigned_vehicles = db.relationship("AssignedVehicle", back_populates="employee", cascade="all, delete")
