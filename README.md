@@ -183,7 +183,7 @@ Same principle as Brands - Models relationship
 ### ERD
 
 One to optional One  
-A trim can have many stocks.  
+A trim can have 0 to many stocks.  
 A stock can have only one trim. 
 
 ### SQLAlchemy
@@ -195,7 +195,7 @@ It's a new way to define a reference. And it does exactly the same thing as `bac
 
 Other principles are the same as others.  
 
-The `stocks` need to match with its child's `back_populates` value and also the value of the current model's `back_populates` need to be used to define the relationship in child's model as such:
+In the last line, the `stocks` need to match with its child model's (Stock) `back_populates` value and also the value of the current model's `back_populates` need to be used to define the relationship in child's model as such:
 
 <img src="docs/stock.png">    
 
@@ -229,6 +229,8 @@ But it makes sense that 'Stocks' records exist and haven't been assigned yet.  T
 
 <img src="docs/stock.png">  
 
+Since this case is one to one relationship, the references of two models are all written in singular. (`assigned_vehicle` and `stock` in the relationship defining clause)
+
 Other principles are the same as Trims-Stocks relationship but this case has:
 
 1. `cascade="all, delete"`
@@ -238,7 +240,7 @@ Other principles are the same as Trims-Stocks relationship but this case has:
 
 <img src="docs/av.png">  
 
-Same principle with the Trims-Stocks relationship.
+Same as the model Stock. All references of related models are written in singular. (`stock`, `assigned_vehicle`)
 
 ### Database
 
@@ -283,12 +285,13 @@ In the child table's foreign key defining section, add `ON DELETE CASCADE` at th
 ### ERD
 
 One to optional many  
-An employee can have many assigned vehicles.  
+An employee can have 0 to many assigned vehicles.  
 An assigned vehicle can only be managed by one employee.
 
 ### SQLAlchemy
 
-Same principle as Stock - Assigned_vehicle case.
+Same principle as Trim - Stocks case  using `back_populates` in one to many relationship.  
+And `cascade = "all, delete"` is applied just like in the Stock model.
 
 <b>Employee model</b>
 
@@ -300,7 +303,7 @@ Same principle as Stock - Assigned_vehicle case.
 
 ### Database
 
-Same principle and issue as Stock - Assigned_vehicle case.
+Same principle and issue as Stock - Assigned_vehicle case.  
 
 <b>employees table</b>  
 
@@ -368,10 +371,10 @@ The problems have been solved by:
     - To provide different authority.
     - For example, only managers are authorized to assign vehicles.
 
-## API documentation by resource
+## API documentation
 
-*Note: Due to limit of number of document publishing, two different blueprints are in one document.  
-Customized messages for all validation failures and errors have been set so guidance are not included in the documents .*
+*Note: Due to limit of number of document publishing, wan't able to have a separated document for each.  
+Customized messages for all validation failures and errors have been set so guidance are not included in the documents.*
 
 ## 1. <a href= "https://documenter.getpostman.com/view/24302062/2s8YYPGfec#intro">Auth - Assigned Vehicles</a>
 
