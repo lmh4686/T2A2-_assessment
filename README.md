@@ -94,26 +94,26 @@ A model can only have one brand.
 
 <img src="docs/Brand.png">
 
-`backref` is a legacy way to define what parent table should be called in child's model. This value can be used in child's model Schema and when referring the foreign key column that comes from the parent table.
-In the case of using `backref`, it only requires to define a relationship in the parent's model.  
+`backref` is a legacy way to define what parent table should be called in its child model. In its child model, this value can be used in `Schema` to define the `fields` and it also can be used when referring its parent table that corresponding foreign key comes from.  
+In the case of using `backref`, it only requires to define a relationship in the parent model.  
 
 <b>Defining one to many relationship:</b>  
 
-1. Since a Brand can have many Models, so the `models` should be pluralized.  
+1. Since one brand can have many models, so the `models` is pluralized when defining a relationship.  
 2. Call `.relationship()` method to define relationship
-3. Write the `__tablename__` value of the model that want to create relationship with the current Model in string for the first argument.
-4. Set `backref` for the second argument. This should be the name of the current model in string. This name can be referred in the child Model's Schema.  
-Since a Model can have only one Brand, so this should be singular in this case.
+3. For the first argument, write the child model name. This should be written in the form of string.
+4. Set `backref` for the second argument. This value is used as reference in its child model to refer its parent model.  
+Since a model can have only one brand, so this should be singular in this case.
 
 <img src="docs/model.png">  
 
 <b>Defining a foreign key</b>  
 
-1. Set the column's name. In this case, the foreign key is the Brand's id so it should `brand_id`.
-2. Call `.Column()` method to create a new column.
+1. Set the column's name. In this case, the foreign key is the Brand's id so it should `brand_id` by convention.
+2. Call `.Column()` method to create a column.
 3. Write data type of the column in the first argument.
 4. Call `.ForeignKey()` method to set the foreign key for the second argument.
-5. Write `tablename.pk(id)` in string as a `.ForeignKey` argument.
+5. Write `tablename.pk(id)` in string as `.ForeignKey`'s argument.
 
 ### Database
 
@@ -121,15 +121,14 @@ Since a Model can have only one Brand, so this should be singular in this case.
 
 <img src="docs/branddb.png">  
 
-In the first line of `Indexes` shows the primary key.  
-In the first line of `Referenced by:` shows the which table use this PK as a foreign key, and which column it belongs to.  
+The first line in the `Indexes` shows the primary key is `id`.  
+The first line in the `Referenced by:` shows which table use this PK as a foreign key, and which column it belongs to.  
 
 <b>models table</b>  
 
 <img src="docs/modeldb.png">  
 
-In the first line of `Foreign-key constraints:`, it shows the foreign key which is `brand_id` column and where it comes from by showing `REFERENCES brands(id)`. 
-
+The first line in the `Foreign-key constraints:`, it shows the foreign key column which is `brand_id` and where it comes from in `REFERENCES brands(id)`. 
 
 <b>Defining relationship in database</b>
 
@@ -145,9 +144,9 @@ FOREIGN KEY(brand_id) REFERENCES brands(id)
 );
 ```  
 
-The rule is creating `brand_id` column as same as other columns.  
-Then, in the separate line, the column name to be set as a foreign key and where it reference from need to be specified.  
-
+The rule is creating `brand_id` column as same way as other columns.  
+Then, the column name to be set as a foreign key and where it reference from need to be specified separately.  
+`FOREIGN KEY({foreign_key_column}) REFERENCES {parent_table(pk)})`
 
 ## Models - Trims
 
@@ -171,7 +170,6 @@ Same principle as Brands - Models relationship
 ### Database
 
 Same principle as Brands - Models relationship  
-
 
 <b>models table</b>:  
 <img src="docs/modeldb.png">  
@@ -240,7 +238,8 @@ Other principles are the same as Trims-Stocks relationship but this case has:
 
 <img src="docs/av.png">  
 
-Same as the model Stock. All references of related models are written in singular. (`stock`, `assigned_vehicle`)
+Same as the model Stock. All references of related models are written in singular (`stock`, `assigned_vehicle`).  
+And the `back_populates` value from the Stock is used to define the relationship (`stock`).
 
 ### Database
 
@@ -262,7 +261,7 @@ As an example above, the `ON DELETE CASCADE` will be added into the `Referenced 
 
 <img src="docs/avdb.png">
 
-Same issue with the stocks table, but if it's implemented in database the second line of the `Foreign-Key constraints:` will be changed to : 
+Same issue with the stocks table, but if it's implemented in database the second line in the `Foreign-Key constraints:` will have `ON DELETE CASCADE` at the end as such : 
 ``` 
 "assigned_vehicles_stock_id_fkey" FOREIGN KEY (stock_id) REFERENCES stocks(id) ON DELETE CASCADE
 ```
@@ -291,7 +290,7 @@ An assigned vehicle can only be managed by one employee.
 ### SQLAlchemy
 
 Same principle as Trim - Stocks case  using `back_populates` in one to many relationship.  
-And `cascade = "all, delete"` is applied just like in the Stock model.
+And `cascade = "all, delete"` is applied as described in the Stock model.
 
 <b>Employee model</b>
 
